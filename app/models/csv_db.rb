@@ -1,8 +1,9 @@
 require 'csv'
+require 'open-uri'
 class CsvDb
   class << self
-    def convert_save(target_model, csv_data, &block)
-      file = File.open(File.join(Rails.root, 'public', 'csv_files', csv_data), 'r')
+    def convert_save(target_model, s3_url, &block)
+      file = open(s3_url)
       csv_file = file.read
       CSV.parse(csv_file, :headers => true, header_converters: :symbol, col_sep: '&&&&&' ) do |row|
         data = row.to_hash
@@ -14,7 +15,6 @@ class CsvDb
            end
          end
       end
-      File.delete(File.join(Rails.root, 'public', 'csv_files', csv_data))
     end
   end
 end
